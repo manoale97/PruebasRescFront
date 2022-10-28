@@ -8,6 +8,10 @@ const URI1 = process.env.REACT_APP_API_URL+'afiliada'
 
 const CompEmpresas = () =>{
 
+    useEffect(()=>{
+        document.title = 'Lista Empresas Afiliadas';
+      },[])
+
     const [data, setData] = useState([]);
 
     //Definicion de las columnas para el datatable
