@@ -71,19 +71,15 @@
 
 /* adicionales */
 .data-table-extensions-filter {
-    background-color: #9d1d1d;
+    background-color: #a32131;
 }
 
 a{
-    color: #9d1d1d;
+    color: #a32131;
 }
-/*
-.form-control {
-    color: white;
-} */
 
 .nav-link:hover {
-    color: #9d1d1d;
+    color: #a32131;
 }
 
 .fondologin{
@@ -91,5 +87,48 @@ a{
 }
 
 .bg-primary {
-    background-color: #9d1d1d !important;
+    background-color: #a32131 !important;
+}
+
+.iti{
+    display:flex;
+}
+
+.seleccion {
+    &__menu {
+        color: #000000;
+    }
+
+    &__menuList{
+        color: #000000;
+    }
+
+    &__control {
+        color: #000000;
+        border-color: #2A3038 !important;
+        background-color: #2A3038 !important;
+    }
+
+    &__container {
+        background-color: #2A3038 !important;
+    }
+
+    &__single-value{
+        color: #ffffff !important;
+    }
+    &__input{
+        color: #ffffff !important;
+    }
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+    background-color: #a32131;
+}
+
+.d-flex{
+    justify-content: center;
+}
+
+.iti__country-list {
+    color:#000000 !important;
 }

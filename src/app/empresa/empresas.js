@@ -83,8 +83,17 @@ const CompEmpresas = () =>{
 
     return (
         <div>
-            <h1>Empresas Afiliadas</h1>
+            <center><h1>Empresas Afiliadas</h1></center>
             <p>Aquí puede encontrar la lista de empresas afiliadas en el sistema de REScobranzas</p>
+            <a href="/empresa/crearEmpresaAfiliada">
+            <button type="button" href="/empresa/crearEmpresaAfiliada" className="btn btn-primary btn-icon-text">
+                        <i className="mdi mdi-plus-box btn-icon-prepend"></i>
+                        Crear Nueva Empresa
+            </button>
+            </a>
+            <p></p>
+        <div className="card">
+        <div className="card-body">
         <DataTableExtensions
           columns={columns}
           data={data}
@@ -97,6 +106,8 @@ const CompEmpresas = () =>{
         pagination
         />
         </DataTableExtensions>
+            </div>
+        </div>
         </div>
     )
 }
