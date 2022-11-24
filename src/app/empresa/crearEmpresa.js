@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Form} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
+import {useNavigate} from "react-router-dom";
 import Select from 'react-select'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -8,15 +9,16 @@ import CompListaContactos from './listaContactos';
 import CompListaRequisitos from './listaRequisitos';
 
 const URIpaises = process.env.REACT_APP_API_URL+'paises-ciudades'
-const URIemp = process.env.REACT_APP_API_URL+''
+const URIemp = process.env.REACT_APP_API_URL+'afiliada'
 
 function CompCrearEmpresa() {
 
+  const navigate =  useNavigate();//metodo para redireccionar
   const date = new Date()
 
-  const [infoGeneral, setInfoGeneral] = useState([])//creo un estado con array de la info recolectada
   const [contactos,setContactos] = useState([]) //estados para extraer la informacion del componente hijo
   const [requisitos,setRequisitos] = useState([])//estados para extraer la informacion del componente hijo
+
 
   //variables para guardar los ids de las direcciones
   const [valuePais, setValuePais] = useState('')
@@ -38,7 +40,7 @@ function CompCrearEmpresa() {
     }
   }
 
-  //creacion de estados
+  //creacion de estados de los paises,etc
   const [paisesList, setPaisesList]=useState([])
   const [provinciasList, setProvinciasList]=useState([])
   const [ciudadesList, setCiudadesList]=useState([])
@@ -101,10 +103,7 @@ function CompCrearEmpresa() {
   e.preventDefault();
   setTabActiva(3)
  }
-//metodo para el clic del formulario de la tercera pestaña
- const submitRequisitos = (e) => {
-  
-}
+
 //metodo para regresar a la pestaña de atrás
 const atras = (e) => {
   e.preventDefault();
@@ -113,45 +112,87 @@ const atras = (e) => {
 
   //metodo subir la info de la primera pestaña al backend
   const handleCrearAfiliada=async()=>{
-    await axios.post(URIemp, 
-      {'opcion':2,
-      'nombre':document.getElementById('nombreEmpresa').value,
-      'nombre_comercial':document.getElementById('nombreComercial').value,
-      'ruc':document.getElementById('RUC').value,
-      'idPais':valuePais,
-      'idProvincia':valueProvincia,
-      'idCiudad':valueCiudad,
-      'direccion':document.getElementById('direccion').value,
-      'telefono1':document.getElementById('telefono1').value,
-      'telefono2':document.getElementById('telefono2').value,
-      'celular1':document.getElementById('celular1').value,
-      'email1':document.getElementById('email1').value,
-      'email2':document.getElementById('email2').value,
-      'representante':document.getElementById('representante').value,
-      'ciRepresentante':document.getElementById('CIrepresentante').value,
-      'fechaCreacion':(date.getFullYear())+'-'+(date.getMonth()+1)+'-'+(date.getDate()),
-      'contribuyenteEspecial':'',
-      'codigoContribuyente':'',
-      'microempresa':'',
-      'notamicroempresa':'',
-      'rimpe':'',
-      'notaRimpe':'',
-      'agenteRetencion':'',
-      'nResolucion':'',
-      'obligadaCont':'',
-      'tipoFirma':'',
-      'Imagen':'',
-      'estado':0
-    })//llamado a la api para la validacion del token
-    .then(response=>{
+    try {
+      await axios.post(URIemp, 
+        {'opcion':2,
+        'nombre':document.getElementById('nombreEmpresa').value,
+        'nombre_comercial':document.getElementById('nombreComercial').value,
+        'ruc':document.getElementById('RUC').value,
+        'idPais':valuePais,
+        'idProvincia':valueProvincia,
+        'idCiudad':valueCiudad,
+        'direccion':document.getElementById('direccion').value,
+        'telefono1':document.getElementById('telefono1').value,
+        'telefono2':document.getElementById('telefono2').value,
+        'celular1':document.getElementById('celular1').value,
+        'email1':document.getElementById('email1').value,
+        'email2':document.getElementById('email2').value,
+        'representante':document.getElementById('representante').value,
+        'ciRepresentante':document.getElementById('CIrepresentante').value,
+        'fechaCreacion':(date.getFullYear())+'-'+(date.getMonth()+1)+'-'+(date.getDate()),
+        'contribuyenteEspecial':contEspecial,
+        'codigoContribuyente':document.getElementById('codContribuyente').value,
+        'microempresa':microempresa,
+        'notamicroempresa':document.getElementById('notaMicroempresa').value,
+        'rimpe':rimpe,
+        'notaRimpe':document.getElementById('notaRimpe').value,
+        'agenteRetencion':agRetencion,
+        'nResolucion':document.getElementById('nResolucion').value,
+        'obligadaCont':obContabilidad,
+        'tipoFirma':document.getElementById('tipoFirma').value,
+        'Imagen':'',
+        'estado':0
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //metodo para obtener el id de la nueva afiliada con el ruc
+  const getIdAfiliada = async() => {
+    try {
+      const response = await axios.post(URIemp, 
+        {'opcion':5,
+        'ruc': document.getElementById('RUC').value
+      })
+      return response.data.idAfiliada
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //metodo para subir los contactos y requisitos creados en el API
+ const submitRequisitosyContactos = async(id) => {
+  contactos.forEach(element => {
+    axios.post(URIemp, 
+      {'opcion':6,
+      'idAfiliada':id,
+      'cargo':element.cargo,
+      'nombre':element.nombre,
+      'telefono':element.telefono,
+      'celular':element.celular,
+      'email':element.email
     })
     .catch(error=>{
       console.log(error);
     })
-  }
+  });
+
+  requisitos.forEach(element => {
+    axios.post(URIemp, 
+      {'opcion':7,
+      'idAfiliada':id,
+      'idRequisito':element.idRequisito,
+      'entregado':element.entregado,
+      'archivo': '',
+    })
+    .catch(error=>{
+      console.log(error);
+    })
+  });
+}
 
   useEffect(()=>{
-    console.log((date.getFullYear())+'-'+(date.getMonth()+1)+'-'+(date.getDate()))
     document.title = 'Crear Afiliada Nueva';
     llamarPaises();
     //Telefono internacional
@@ -182,6 +223,18 @@ const atras = (e) => {
     label: `${elemento.nombre}`
     }
   ))
+
+  //al hacer el ultimo click usamos los metodos creados para subir a la API y redireccionamos
+  const submitFinal = async(e) => {
+    var resp = window.confirm(`¿Está seguro de crear la empresa afiliada nueva con RUC ${document.getElementById('RUC').value}?`);
+    if (resp){
+    e.preventDefault();
+    await handleCrearAfiliada();
+    const id = await getIdAfiliada();
+    await submitRequisitosyContactos(id)
+    navigate("/administracion/afiliadas");
+    }
+  }
 
   return (
     <div> 
@@ -302,14 +355,6 @@ const atras = (e) => {
                         <Form.Control type="text" id="imagen" />
                         </div>
                         </Form.Group>
-                    </div>
-                    <div className="col-md-6">
-                      <Form.Group className="row">
-                        <label className="col-sm-4 col-form-label">Estado:</label>
-                        <div className="col-sm-8">
-                        <Form.Control type="text" id="estadoEmpresa"/>
-                        </div>
-                      </Form.Group>
                     </div>
                   </div>
                   <h4 className="card-description"> Dirección </h4>
@@ -590,7 +635,7 @@ const atras = (e) => {
                       </a>
                       </div>
                       <div className="col-sm-2">
-                      <button className="btn btn-success btn-fw"
+                      <button className="btn btn-success btn-fw"  onClick={(e)=>submitFinal(e)}
                       >Crear Empresa</button>
                       </div>
                     </div>

@@ -94,7 +94,7 @@ a{
     display:flex;
 }
 
-.seleccion {
+.seleccionPais, .seleccionProvincia, .seleccionCiudad, .seleccion{
     &__menu {
         color: #000000;
     }

@@ -64,7 +64,7 @@ const CompLogin = () => {
       document.cookie = `token=${response.data.token}; max-age=${60*120}; path=/; samesite=strict`
       
       var respuesta=response.data.token;//Extrae la respuesta
-      console.log(respuesta)
+      
       if(respuesta!==undefined){//y la evalua para ver si existe o no para guardarla en una cookie y redireccionar
         
         

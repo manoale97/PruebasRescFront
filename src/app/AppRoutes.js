@@ -45,8 +45,6 @@ const CompCrudClientes = lazy(() => import('./clientes/crudClientes'));
 
 
 
-
-
 const AppRoutes = () => {
 //class AppRoutes extends component {
   //render () {
@@ -119,7 +117,7 @@ const AppRoutes = () => {
             <Route path="/dashboard" element={ <Dashboard></Dashboard> } />
             <Route path="/seleccionEmpresa" element={ <SeleccionEmpresa></SeleccionEmpresa> } />
             <Route path="/empresa/datosEmpresa" element={<CompDatosEmpresa></CompDatosEmpresa>} />
-            <Route path="/empresa/edicionEmpresa" element={ <CompEdicionEmpresa></CompEdicionEmpresa> } />
+            <Route path="/empresa/edicionEmpresa/:id" element={ <CompEdicionEmpresa></CompEdicionEmpresa> } />
             <Route path="/empresa/nominaEmpresa" element={ <CompNominaEmpresa></CompNominaEmpresa> } />
             <Route path="/productos/resProductos" element={ <CompCrudProductos></CompCrudProductos> } />
             <Route path="/clientes/resAfiliadaClientes" element={ <CompCrudClientes></CompCrudClientes> } />

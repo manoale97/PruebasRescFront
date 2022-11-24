@@ -1,21 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Modal } from 'react-bootstrap';
+import {useNavigate, useParams} from "react-router-dom";
 import DataTable, { createTheme } from 'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import 'react-data-table-component-extensions/dist/index.css';
+import axios from 'axios';
 
-function CompListaContactos(props) {
+const URIemp = process.env.REACT_APP_API_URL+'afiliada'
+
+function CompListaContactosEditar(props) {
+
+    const navigate =  useNavigate();//metodo para redireccionar
+    const id = useParams();//metodo para traer el id de los parametros desde la URL
+
     useEffect(()=>{
-        if(props.contactos){
+        /* if(props.contactos){
       setDatos(props.contactos)
-        }
-    })
+        } */
+        actualizarContactos();
+    },[])
 
     //columnas de la tabla
     const columns = [
         {
             name: 'Id',
-            selector: row => row.id,
+            selector: row => row.idContacto,
             omit: true
             
         },
@@ -27,7 +36,7 @@ function CompListaContactos(props) {
         {
             name: 'Nombre',
             selector: row => row.nombre,
-            
+            wrap: true
         },
         {
             name: 'Telefono',
@@ -72,23 +81,41 @@ function CompListaContactos(props) {
     const handleCloseCE = () => setInfoMdContactoEditar(false);
     const handleShowCE = () => setInfoMdContactoEditar(true);
     //autonumerado de contactos para la creacion
-    const [contador, setContador] = useState(1)
+    //const [contador, setContador] = useState(1)
 
+    const actualizarContactos = async() => {
+        try {
+            const InfoEntera = await axios.post(URIemp, 
+                {'opcion':8,
+                'idAfiliada':id.id
+                })
+            setDatos(InfoEntera.data)
+            await setChangeState(now)
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
     //metodo para insertar contacto
-    const insertarContacto = () => {
-        var contacto = [{
-            id: contador,
-            cargo: document.getElementById("cargoContacto").value,
-            nombre: document.getElementById("nombreContacto").value,
-            telefono: document.getElementById("telefonoContacto").value,
-            celular: document.getElementById("celularContacto").value,
-            email: document.getElementById("correoContacto").value,
-        }]
-        
-        setContador ( contador + 1);
-        setDatos(datos.concat(contacto))
-        props.setContactos(datos.concat(contacto))//metodo para pasar el estado al componente padre
-        
+    const insertarContacto = async() => {
+
+        try {
+            await axios.post(URIemp, 
+                {'opcion':6,
+                'idAfiliada':id.id,
+                'cargo':document.getElementById("cargoContacto").value,
+                'nombre':document.getElementById("nombreContacto").value,
+                'telefono':document.getElementById("telefonoContacto").value,
+                'celular':document.getElementById("celularContacto").value,
+                'email':document.getElementById("correoContacto").value,
+              })
+
+            await actualizarContactos();
+            window.alert("Contacto agregado exitosamente")
+            
+        } catch (error) {
+            console.log(error);
+        }
         handleCloseC()
     }
 
@@ -109,44 +136,41 @@ function CompListaContactos(props) {
     }
 
     //metodo para editar cuando se de submit del modal  
-    const submitEditarContacto = () => {
-        var datosAux = datos;
-        setChangeState(now)
-        datosAux.forEach(element => {
-            if (element.id === row.id){
-                /* var indice = datosAux.indexOf(element)
-                datosAux.splice(indice,1) */
-                return(
-                element.cargo=document.getElementById("cargoContacto").value,
-                element.nombre=document.getElementById("nombreContacto").value,
-                element.telefono=document.getElementById("telefonoContacto").value,
-                element.celular=document.getElementById("celularContacto").value,
-                element.email=document.getElementById("correoContacto").value
-                )
-                }
-        })
-        setDatos(datosAux)//elimina al contacto por su indice
-        props.setContactos(datosAux)//metodo para pasar el estado al componente padre
-        //insertarContacto()//inserta el contacto editado
-        setTimeout(() => {handleCloseCE()}, 200);//tiempo de espera para el re renderizado
+    const submitEditarContacto = async() => {
+        try {
+            var conf = window.confirm("El contacto será editado. Continuar?")
+            if(conf){
+            await axios.post(URIemp, 
+                {'opcion':10,
+                'idContacto':row.idContacto,
+                'cargo':document.getElementById("cargoContacto").value,
+                'nombre': document.getElementById("nombreContacto").value,
+                'telefono':document.getElementById("telefonoContacto").value,
+                'celular':document.getElementById("celularContacto").value,
+                'email':document.getElementById("correoContacto").value
+            })
+            actualizarContactos();
+        }
+        } catch (error) {
+            console.log(error)
+        }
+        setTimeout(() => {handleCloseCE()}, 200);
     }
 
     //metodo para eliminar contacto
     const eliminarContacto = async(e, row) => {
         
-        var conf = window.confirm('Esta seguro de eliminar este contacto')
+        var conf = window.confirm('Está seguro de eliminar este contacto de forma permanente?')
         if(conf){
-        var datosAux = datos;
-        datosAux.forEach(element => {
-            if (element.id === row.id){
-                var indice = datosAux.indexOf(element)
-                datosAux.splice(indice,1)
-                }
-        })
-
-        setDatos(datosAux)//elimina al contacto por su indice
-        props.setContactos(datosAux)//metodo para pasar el estado al componente padre
-
+            try {
+                await axios.post(URIemp, 
+                    {'opcion':12,
+                    'idContacto':row.idContacto
+                })
+                actualizarContactos();
+            } catch (error) {
+                console.log(error)
+            }
         }
         await setChangeState(now)
     }
@@ -169,6 +193,17 @@ function CompListaContactos(props) {
         noDataComponent="No hay Contactos"
         />
         </DataTableExtensions>
+
+        <div className="container mt-4">
+                      <div className="row justify-content-end">
+                        <div className="col-sm-2">
+                        <a href="/administracion/afiliadas">
+                        <button type="button" className="btn btn-light btn-fw">Cancelar</button>
+                        </a>
+                        </div>
+                      </div>
+                    </div>
+
             {/******** modal de contacto *********/}
                 <Modal show={showMdContacto} onHide={handleCloseC} id="modalContacto">
                     <Modal.Header closeButton>
@@ -268,4 +303,4 @@ function CompListaContactos(props) {
     )
 }
 
-export default CompListaContactos
+export default CompListaContactosEditar
