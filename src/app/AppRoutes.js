@@ -2,9 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { /*Switch,*/ Route, Routes, /*Redirect*/ Navigate } from 'react-router-dom';
 
 import Spinner from '../app/shared/Spinner';
-import axios from 'axios';
 
-const URI = process.env.REACT_APP_API_URL+'tokvalid'
 
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 
@@ -45,45 +43,11 @@ const CompCrudClientes = lazy(() => import('./clientes/crudClientes'));
 
 
 
-const AppRoutes = () => {
+const AppRoutes = (props) => {
 //class AppRoutes extends component {
   //render () {
-    //hook para setear el estado de login
-    const [logeado, setlogeado]=useState(false)
-    const [numE, setnumE]=useState(0)
-
-    var token = document.cookie //extrae el token de la cookie
-    token = token.replace('token=','')
-
-    const validaciones = async() =>{//validaciones para el ruteo condicional
-      if ( token ){
-      await axios.post(URI, {'token':`${token}`} )//llamado a la api para la validacion del token
-      .then(response=>{
-          //guarda variables o estados en los que se define el ruteo condicional
-          global.name=response.data.user[0].nombre
-          global.idUser=response.data.user[0].id
-          global.nEmpresas=response.data.user[1].length
-          //console.log(response.data.user[1].length)
-
-          setnumE(response.data.user[1].length)
-          setlogeado(true)
-        })
-        .catch(error=>{
-          console.log(error);
-          setlogeado(false)
-        })
-      }else{
-      setlogeado(false)
-      }
-    }
-
-    //hook para llamar al token de sesion
-    useEffect(()=>{
-      validaciones();    
-    },[])
-      
-    var nempresas=numE;
-  
+    
+      const logeado=props.logeado
    
       return (
         <Suspense fallback={<Spinner/>}>

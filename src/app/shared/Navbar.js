@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link /*Redirect, useHistory*/, useNavigate, redirect } from 'react-router-dom';
 import { Trans } from 'react-i18next';
+import globalVar from '../global';
 
 const Navbar = () => {
   
@@ -16,11 +17,13 @@ const Navbar = () => {
   //const navigate = useHistory();
   const navigate = useNavigate();
 
-  const CerrarSesionHandler=()=> {
+  const CerrarSesionHandler=async()=> {
+    function cambiarToken(){
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    global.name='';
+    }
+    await cambiarToken();
+    globalVar.usuario='';
     navigate("/login");
-    setTimeout(() => { window.location.reload()}, 100);
   } 
 
     return (
@@ -39,7 +42,7 @@ const Navbar = () => {
               <Dropdown.Toggle as="a" className="nav-link cursor-pointer no-caret">
                 <div className="navbar-profile">
                   {/*<img className="img-xs rounded-circle" src={require('../../assets/images/faces/face1.jpg')} alt="profile" />*/}
-                  <p className="mb-0 d-none d-sm-block navbar-profile-name">Hola {global.name}</p>
+                  <p className="mb-0 d-none d-sm-block navbar-profile-name">Hola {globalVar.usuario}</p>
                   <i className="mdi mdi-menu-down d-none d-sm-block"></i>
                 </div>
               </Dropdown.Toggle>

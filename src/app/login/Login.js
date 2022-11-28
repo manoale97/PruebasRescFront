@@ -21,27 +21,6 @@ const CompLogin = () => {
     var token = document.cookie //extrae el token de la cookie
     token = token.replace('token=','')
 
-    const validaciones = async() =>{//validaciones para el ruteo condicional
-      if ( token ){
-      await axios.post(URItok, {'token':`${token}`} )//llamado a la api para la validacion del token
-      .then(response=>{
-          //guarda variables o estados en los que se define el ruteo condicional
-          global.name=response.data.user[0].nombre
-          global.idUser=response.data.user[0].id
-          
-          setnumEmp(response.data.user[1].length)
-          setLogin(true)
-          navigate("/dashboard");
-        })
-        .catch(error=>{
-          console.log(error);
-          setLogin(false)
-        })
-      }else{
-        setLogin(false)
-      }
-    }
-
     //hook para llamar al token de sesion
     /* useEffect(()=>{
       validaciones();    
@@ -61,7 +40,7 @@ const CompLogin = () => {
     await axios.post(URI, {correo: correo, contrasenia:contrasenia})// llamadas HTTP
     .then(response=>{
       
-      document.cookie = `token=${response.data.token}; max-age=${60*120}; path=/; samesite=strict`
+      document.cookie = `token=${response.data.token}; max-age=${60*240}; path=/; samesite=strict`
       
       var respuesta=response.data.token;//Extrae la respuesta
       
@@ -70,7 +49,7 @@ const CompLogin = () => {
         
         axios.post(URItok, {'token': `${response.data.token}`} )//llamado a la api para la validacion del token
         .then(response=>{
-          var numEmpresas = response.data.user[1].length
+          var numEmpresas = response.data.user[1]
           
             if(numEmpresas===1){
               

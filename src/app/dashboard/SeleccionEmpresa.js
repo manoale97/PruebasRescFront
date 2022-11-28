@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from 'axios';
 import { Form } from 'react-bootstrap';
 import { /*useHistory*/ useNavigate  } from "react-router-dom";
+import globalVar from "../global";
 
 //Uri para llamar a la API
 const URI1 = process.env.REACT_APP_API_URL+'nEmpresas'
@@ -13,7 +14,7 @@ export const SeleccionEmpresa = () => {
     
     const [EmpresasList, setEmpresasList]=useState([])
     const consultaEmpresas = async() =>{
-        await axios.post(URI1, {'idUsuario': global.idUser} )
+        await axios.post(URI1, {'idUsuario': globalVar.idUser} )
         .then(response=>{
            
             var empresas = response.data.numEmpresas;

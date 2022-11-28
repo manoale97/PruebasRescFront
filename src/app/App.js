@@ -13,6 +13,11 @@ import {
   useParams,
 } from "react-router-dom";
 
+import axios from 'axios';
+import globalVar from './global';
+
+const URI = process.env.REACT_APP_API_URL+'tokvalid'
+
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
     let location = useLocation();
@@ -31,6 +36,38 @@ function withRouter(Component) {
 
 //class App extends Component {
 const App = () => {
+
+  //hook para setear el estado de login
+  const [logeado, setlogeado]=useState(false)
+  const [numE, setnumE]=useState(0)
+
+  var token = document.cookie //extrae el token de la cookie
+  token = token.replace('token=','')
+
+  const validaciones = async() =>{//validaciones para el ruteo condicional
+    if ( token ){
+    await axios.post(URI, {'token':`${token}`} )//llamado a la api para la validacion del token
+    .then(response=>{
+        //guarda variables o estados en los que se define el ruteo condicional
+        globalVar.usuario=response.data.user[0].nombre
+        globalVar.idUser=response.data.user[0].id
+
+        setnumE(response.data.user[1])
+        setlogeado(true)
+      })
+      .catch(error=>{
+        console.log(error);
+        setlogeado(false)
+      })
+    }else{
+    setlogeado(false)
+    }
+  }
+
+  //hook para llamar al token de sesion
+  useEffect(()=>{
+    validaciones();    
+  },[])
 
   /*state = {}
   componentDidMount() {
@@ -61,7 +98,7 @@ const App = () => {
           { navbarComponent }
           <div className="main-panel">
             <div className="content-wrapper">
-              <AppRoutes/>
+              <AppRoutes logeado={logeado}/>
             </div>
             { footerComponent }
           </div>

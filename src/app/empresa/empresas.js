@@ -4,6 +4,7 @@ import DataTableExtensions from 'react-data-table-component-extensions';
 import 'react-data-table-component-extensions/dist/index.css';
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
+import globalVar from '../global';
 
 const URI1 = process.env.REACT_APP_API_URL+'afiliada'
 
@@ -63,7 +64,10 @@ const CompEmpresas = () =>{
             center: true,
         },
         {
-            cell: (row) => <div> <button type="button" onClick={(e)=>editarAfiliada(e, row)} className="btn btn-warning btn-rounded btn-sm"><i> </i><i className="mdi mdi-border-color"></i></button></div>,
+            cell: (row) => <div> 
+                <button type="button" onClick={(e)=>editarAfiliada(e, row)} className="btn btn-warning btn-rounded btn-sm"><i> </i><i className="mdi mdi-border-color"></i></button>
+                <button type="button" onClick={(e) =>eliminarAfiliada(e,row)} className="btn btn-danger btn-rounded btn-sm"><i> </i><i className="mdi mdi-delete"></i></button>
+                </div>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -85,10 +89,29 @@ const CompEmpresas = () =>{
         })
     }
 
-    //Metodo para editar el contacto
+    //Metodo para editar empresa pasando como parametro el id
     const editarAfiliada = (e, row) => {
         e.preventDefault();
         navigate(`/empresa/edicionEmpresa/${row.idAfiliada}`)
+    }
+
+    //eliminar empresa
+    const eliminarAfiliada = async(e,row) => {
+        e.preventDefault();
+        try {
+            var conf = window.confirm('La empresa afiliada será desactivada y en un plazo de tiempo se realizará su eliminación total. Continuar?')
+            if(conf){
+            await axios.post(URI1, 
+                {
+                'opcion': 4,
+                'estado': 2,
+                'idAfiliada':row.idAfiliada
+            } 
+            )
+        }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {
