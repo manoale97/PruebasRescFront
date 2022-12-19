@@ -42,6 +42,9 @@
     color: $text-muted;
     font-size: $input-placeholder-font-size;
   }
+  &:disabled{
+    background-color: #696c70
+  }
 }
 .navbar {
   .form-control {

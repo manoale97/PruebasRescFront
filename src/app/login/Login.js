@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import axios from 'axios';
 import { /*useHistory*/ useNavigate  } from "react-router-dom";
+
 
 const URI= process.env.REACT_APP_API_URL+'login'
 
@@ -13,34 +14,22 @@ const CompLogin = () => {
   const [contrasenia, setContrasenia] = useState('');
   const [login, setLogin] = useState(false);
 
-  //misma validacion que routes
-  //const [logeado, setlogeado]=useState(false)
-    const [numEmp, setnumEmp]=useState(0)
-    //setnumE(global.nEmpresas);
+  var token = document.cookie //extrae el token de la cookie
+  token = token.replace('token=','')
 
-    var token = document.cookie //extrae el token de la cookie
-    token = token.replace('token=','')
-
-    //hook para llamar al token de sesion
-    /* useEffect(()=>{
-      validaciones();    
-    }) */
-    //fin misma validacion que en routes
-
-  //const navigate = useHistory();
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Ingresar al Sistema Rescobranzas';
-    //validaciones();
   },[]);
-
+  
   const iniciarSesion = async(e) =>{ //Se define un metodo para llamar a la API para pedir Token
     e.preventDefault();
     await axios.post(URI, {correo: correo, contrasenia:contrasenia})// llamadas HTTP
     .then(response=>{
       
-      document.cookie = `token=${response.data.token}; max-age=${60*240}; path=/; samesite=strict`
+      //document.cookie = `token=${response.data.token}; max-age=${60*240}; path=/; samesite=strict`
+      document.cookie = `token=${response.data.token}; path=/; samesite=strict`
       
       var respuesta=response.data.token;//Extrae la respuesta
       
@@ -48,15 +37,17 @@ const CompLogin = () => {
         
         
         axios.post(URItok, {'token': `${response.data.token}`} )//llamado a la api para la validacion del token
-        .then(response=>{
+        .then(response=>{// en el token esta la info del usuario
           var numEmpresas = response.data.user[1]
+          var rol = response.data.user[0].rol
+          var estado = response.data.user[0].estado
           
-            if(numEmpresas===1){
-              
+          if(estado === 1) {//revisa si el usuario esta activo y redirecciona dependiendo del rol y las nempresas que trabaja
+             if(numEmpresas===1 && rol!==0){
               navigate("/dashboard");
               console.log("Se fue a una empresa (dashboard)")
               window.location.reload()
-            }else if(numEmpresas>1){
+            }else if(numEmpresas>1 || rol===1 || rol===0){
               
               navigate("/seleccionEmpresa");
               console.log("Se fue a varias empresas (seleccion)")
@@ -64,6 +55,9 @@ const CompLogin = () => {
             }else{
               console.log("error")
             }
+          }else{
+            alert('Usuario Inactivo')
+          } 
         })
         .catch(error=>{
           console.log(error);

@@ -282,7 +282,7 @@ const CompEdicionEmpresa = () => {
       },[])
 
       const submitEdicionInfo = async(e) => {
-        var conf=window.confirm('Los datos de la empresa serán modificados. Continuar?')
+        var conf=window.confirm('Los datos de la empresa serán modificados.\nContinuar?')
         if(conf){
         e.preventDefault();
         await handleEditarAfiliada();

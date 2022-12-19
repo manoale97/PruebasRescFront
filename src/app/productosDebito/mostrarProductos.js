@@ -1,12 +1,12 @@
-import React from 'react';
-import {useState} from 'react'
+import React, {useEffect, useState} from 'react';
 import DataTable, { createTheme } from 'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import 'react-data-table-component-extensions/dist/index.css';
+import axios from 'axios';
+import {useNavigate} from "react-router-dom";
+import globalVar from '../global';
 
-//const $ = require('jquery');
-//$.DataTable = require('datatables.net');
-//const tableRef = useRef()
+const URI1 = process.env.REACT_APP_API_URL+'producto'
 
 const columns = [
     {
@@ -69,90 +69,72 @@ const data = [
         celular: '0990016984',
         estado: '1',
     },
-    {
-        id: 2,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
-    {
-        id: 3,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
-    {
-        id: 4,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
-    {
-        id: 5,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
-    {
-        id: 6,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
-    {
-        id: 7,
-        ruc: '1719002683001',
-        nombre: 'FASTNETT',
-        parroquia: 'Guayllabamba',
-        direccion: 'AV SIMON BOLIVAR Y EL AGUACATE PARQUE DEL GUAMBRA',
-        telefono: '022368482',
-        celular: '0990016984',
-        estado: '1',
-    },
 ]
 
 
-const CompCrudProductos = () => {
+const CompMostrarProductos = () => {
+
+    const navigate =  useNavigate();//metodo para redireccionar
+
+    useEffect(()=>{
+        document.title = 'Lista de Productos';
+        //llamadaAPI();
+      },[])
 
     const [empresa, setEmpresa] = useState('')
 
+    //Estado de datos para el datatable
+    const [data,setData]=useState([])
+
+    //Definicion de los datos
+    const llamadaAPI = async() => {
+        await axios.post(URI1, 
+            {'opcion': 0} 
+        )
+        .then(response=>{
+            
+            setData(response.data);
+        }
+        )
+        .catch(error=>{
+            console.log(error);
+        })
+    }
+
     return (
+        <div>
+
+            <center><h1>Productos</h1></center>
+
+            <div className="card">
+            <div className="card-body">
+            <p>Aquí puede encontrar la lista de productos que existen en el sistema de REScobranzas.</p>
+            <p>Seleccione uno para ver más detalles.</p>
+            <a href="/productos/crearProducto">
+            <button type="button" className="btn btn-primary btn-icon-text">
+                        <i className="mdi mdi-plus-box btn-icon-prepend"></i>
+                        Crear Nuevo Producto
+            </button>
+            </a>
+
+            <hr size="8px" color="white" />
+
         <DataTableExtensions
           columns={columns}
           data={data}
           print={false}
           export={false}
+          filterPlaceholder='Buscar'
         >
         <DataTable
         noHeader
         pagination
-        //theme="estiloTablas"
-        //highlightOnHover
-            //columns={columns}
-            //data={data}
         />
         </DataTableExtensions>
+            </div>
+        </div>
+        </div>
     )
 }
 
-export default CompCrudProductos
+export default CompMostrarProductos

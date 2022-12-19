@@ -10,7 +10,6 @@ const URIemp = process.env.REACT_APP_API_URL+'afiliada'
 
 function CompListaContactosEditar(props) {
 
-    const navigate =  useNavigate();//metodo para redireccionar
     const id = useParams();//metodo para traer el id de los parametros desde la URL
 
     useEffect(()=>{
@@ -60,16 +59,6 @@ function CompListaContactosEditar(props) {
         },
         
     ];
-
-    const data = [
-        {
-            cargo: 'Gerente',
-            nombre: 'contactoPrueba',
-            telefono: '0993292832',
-            celular: '093299311',
-            email: 'djkadsjdaskl@jdasdl.com',
-        },
-    ]
 
     const [datos,setDatos] = useState([])
 

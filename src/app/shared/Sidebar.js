@@ -128,7 +128,7 @@ class Sidebar extends Component {
             <Collapse in={ this.state.productos }>
               <div>
                 <ul className="nav flex-column sub-menu">
-                  <li className="nav-item"> <Link className={ this.isPathActive('/productos/resProductos') ? 'nav-link active' : 'nav-link' } to="/productos/resProductos"><Trans>Productos</Trans></Link></li>
+                  <li className="nav-item"> <Link className={ this.isPathActive('/productos/mostrarProductos') ? 'nav-link active' : 'nav-link' } to="/productos/mostrarProductos"><Trans>Productos</Trans></Link></li>
                 </ul>
               </div>
             </Collapse>
@@ -303,6 +303,7 @@ class Sidebar extends Component {
               <div>
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item"> <Link className={ this.isPathActive('/administracion/afiliadas') ? 'nav-link active' : 'nav-link' } to="/administracion/afiliadas">Empresas Afiliadas</Link></li>
+                  <li className="nav-item"> <Link className={ this.isPathActive('/administracion/usuarios') ? 'nav-link active' : 'nav-link' } to="/administracion/usuarios">Usuarios</Link></li>
                 </ul>
               </div>
             </Collapse>

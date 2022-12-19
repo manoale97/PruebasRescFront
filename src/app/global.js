@@ -1,9 +1,8 @@
-var usuario,rol,nempresas, idUser
+var usuario,rol,idUser
 const globalVar ={
     usuario,
     idUser,
-    rol,
-    nempresas
+    rol
 }
 
 export default globalVar

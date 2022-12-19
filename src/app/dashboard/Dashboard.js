@@ -3,6 +3,11 @@ import { Doughnut } from 'react-chartjs-2';
 import Slider from "react-slick";
 import { TodoListComponent } from '../apps/TodoList'
 import { VectorMap } from "react-jvectormap"
+import { useChangeInfoUserContext } from '../infoUserProvider';
+import axios from 'axios';
+import globalVar from '../global';
+
+const URI1 = process.env.REACT_APP_API_URL+'nEmpresas'
 
 const mapData = {
   "BZ": 75.00,
@@ -16,9 +21,30 @@ const mapData = {
 //export class Dashboard extends Component {
   export const Dashboard = () => {
 
+  const cambiarIdEmpresa = useChangeInfoUserContext()[3]
+
+    //metodo para consultar la empresa cuando el usuario solo trabaja en una
+    const consultarUnaEmpresa = async(idUsuario) => {
+      if (!window.localStorage.getItem('idEmpresa')){
+      try {
+        const respuesta=await axios.post(URI1, {
+          'idUsuario': idUsuario
+        })
+        await cambiarIdEmpresa(respuesta.data.numEmpresas[0].RUC)
+        return(respuesta.data.numEmpresas[0].RUC)
+      
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    }
+    
   /*componentDidMount() {
     document.title = 'Sistema Web Rescobranzas'
   }*/
+  useEffect(()=>{
+    consultarUnaEmpresa(globalVar.idUser)
+  },[])
 
   useEffect(() => {
     document.title = 'Sistema Web REScobranzas';

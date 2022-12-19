@@ -3,7 +3,6 @@ import { /*Switch,*/ Route, Routes, /*Redirect*/ Navigate } from 'react-router-d
 
 import Spinner from '../app/shared/Spinner';
 
-
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
 
 const Buttons = lazy(() => import('./basic-ui/Buttons'));
@@ -37,10 +36,14 @@ const CompNominaEmpresa = lazy(() => import('./empresa/nominaEmpresa.js'));
 const CompEmpresas = lazy(() => import('./empresa/empresas.js'));
 const CompCrearEmpresa = lazy(()=>import('./empresa/crearEmpresa.js'))
 ////productos
-const CompCrudProductos = lazy(() => import('./productos/crudProductos'));
+const CompMostrarProductos = lazy(() => import('./productosDebito/mostrarProductos'));
+const CompCrearProducto = lazy(() => import('./productosDebito/crearProducto'));
 ////clientes
 const CompCrudClientes = lazy(() => import('./clientes/crudClientes'));
-
+////usuarios
+const CompUsuarios = lazy(() => import('./usuarios/mostrarUsuarios'));
+const CompCrearUsuario = lazy(() => import('./usuarios/crearUsuarios'));
+const CompEdicionUsuario = lazy(() => import('./usuarios/edicionUsuarios'));
 
 
 const AppRoutes = (props) => {
@@ -53,9 +56,6 @@ const AppRoutes = (props) => {
         <Suspense fallback={<Spinner/>}>
          
         <Routes>
-          
-          
-          {/* <Route exact path="/login" element={<CompLogin></CompLogin>}/> */}
           
           <Route path="/basic-ui/buttons" element={ <Buttons></Buttons> } />: 
           <Route path="/basic-ui/dropdowns" element={ <Dropdowns></Dropdowns> } />
@@ -83,22 +83,18 @@ const AppRoutes = (props) => {
             <Route path="/empresa/datosEmpresa" element={<CompDatosEmpresa></CompDatosEmpresa>} />
             <Route path="/empresa/edicionEmpresa/:id" element={ <CompEdicionEmpresa></CompEdicionEmpresa> } />
             <Route path="/empresa/nominaEmpresa" element={ <CompNominaEmpresa></CompNominaEmpresa> } />
-            <Route path="/productos/resProductos" element={ <CompCrudProductos></CompCrudProductos> } />
+            <Route path="/productos/mostrarProductos" element={ <CompMostrarProductos></CompMostrarProductos> } />
+            <Route path="/productos/crearProducto" element={ <CompCrearProducto></CompCrearProducto> } />
             <Route path="/clientes/resAfiliadaClientes" element={ <CompCrudClientes></CompCrudClientes> } />
             <Route path="/administracion/afiliadas" element={ <CompEmpresas></CompEmpresas> } />
             <Route path="/empresa/crearEmpresaAfiliada" element={ <CompCrearEmpresa></CompCrearEmpresa> } />
+            <Route path="/administracion/usuarios" element={ <CompUsuarios></CompUsuarios> } />
+            <Route path="/administracion/crearUsuario" element={ <CompCrearUsuario></CompCrearUsuario> } />
+            <Route path="/administracion/editarUsuario/:id" element={ <CompEdicionUsuario></CompEdicionUsuario> } />
             <Route path="*" element={ <Error404></Error404> } />
           </Route>
           <Route exact path="/login" element={<CompLogin></CompLogin>}/>
           
-          {/* <Route exact path="/login" element={
-            <ProtectedRoute user={logeado} islogin={true}>
-          <CompLogin></CompLogin>
-          </ProtectedRoute>
-          }/> */}
-
-          {/*<Route path="/login" element={ CompLogin } />*/}
-          {/*<Redirect to="/dashboard" />*/}
         </Routes>
           
       </Suspense>

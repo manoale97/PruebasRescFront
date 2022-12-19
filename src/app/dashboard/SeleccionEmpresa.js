@@ -3,9 +3,11 @@ import axios from 'axios';
 import { Form } from 'react-bootstrap';
 import { /*useHistory*/ useNavigate  } from "react-router-dom";
 import globalVar from "../global";
+import { useChangeInfoUserContext } from "../infoUserProvider";
 
 //Uri para llamar a la API
 const URI1 = process.env.REACT_APP_API_URL+'nEmpresas'
+const URI2 = process.env.REACT_APP_API_URL+'afiliada'
 
 
 export const SeleccionEmpresa = () => {
@@ -14,6 +16,19 @@ export const SeleccionEmpresa = () => {
     
     const [EmpresasList, setEmpresasList]=useState([])
     const consultaEmpresas = async() =>{
+        if(globalVar.rol===1 || globalVar.rol===0){
+            await axios.post(URI2, {'opcion': 0} )
+        .then(response=>{
+           
+            var empresas = response.data;
+            //console.log(response.data);
+            setEmpresasList(empresas)
+
+          })
+          .catch(error=>{
+            console.log(error);
+          })
+        }else{
         await axios.post(URI1, {'idUsuario': globalVar.idUser} )
         .then(response=>{
            
@@ -26,11 +41,14 @@ export const SeleccionEmpresa = () => {
             console.log(error);
           })
         }
+        }
+        //metodo traido del context para setear la variable global de empresaID
+        const setIdEmpresa=useChangeInfoUserContext()[3]
 
-    const handleEmpresaSeleccion = (e) =>{
+    const handleEmpresaSeleccion = async(e) =>{
         e.preventDefault();
-        global.empresaId=document.getElementById('seleccionEmpresa').value;
-        //navigate.push("/dashboard");
+        
+        await setIdEmpresa(parseInt(document.getElementById('seleccionEmpresa').value));
         navigate("/dashboard");
     }
 
@@ -53,7 +71,7 @@ export const SeleccionEmpresa = () => {
         <select className="form-control" id="seleccionEmpresa">
 
         {EmpresasList.map(elemento=>(
-            <option key={elemento.idAfiliadas} value={elemento.idAfiliadas}>{elemento.nombre}</option>
+            <option key={elemento.RUC} value={elemento.RUC}>{elemento.nombre}</option>
         )
         )}
         </select>

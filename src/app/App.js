@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 //import { withRouter } from 'react-router-dom';
 import './App.scss';
 import AppRoutes from './AppRoutes';
@@ -15,6 +15,8 @@ import {
 
 import axios from 'axios';
 import globalVar from './global';
+import UserInfoProvider from './infoUserProvider.jsx';
+import { encriptar, desencriptar } from './crypt/crypt';
 
 const URI = process.env.REACT_APP_API_URL+'tokvalid'
 
@@ -39,26 +41,24 @@ const App = () => {
 
   //hook para setear el estado de login
   const [logeado, setlogeado]=useState(false)
-  const [numE, setnumE]=useState(0)
+
 
   var token = document.cookie //extrae el token de la cookie
   token = token.replace('token=','')
 
   const validaciones = async() =>{//validaciones para el ruteo condicional
     if ( token ){
-    await axios.post(URI, {'token':`${token}`} )//llamado a la api para la validacion del token
-    .then(response=>{
-        //guarda variables o estados en los que se define el ruteo condicional
+      try {
+        const response = await axios.post(URI, {'token':`${token}`} )//llamado a la api para la validacion del token
         globalVar.usuario=response.data.user[0].nombre
         globalVar.idUser=response.data.user[0].id
+        globalVar.rol=response.data.user[0].rol
 
-        setnumE(response.data.user[1])
         setlogeado(true)
-      })
-      .catch(error=>{
+      } catch (error) {
         console.log(error);
         setlogeado(false)
-      })
+      }
     }else{
     setlogeado(false)
     }
@@ -92,6 +92,7 @@ const App = () => {
     let footerComponent = !isFullPageLayout ? <Footer/> : '';
 
     return (
+      <UserInfoProvider>
       <div className="container-scroller">
         { sidebarComponent }
         <div className="container-fluid page-body-wrapper">
@@ -104,6 +105,7 @@ const App = () => {
           </div>
         </div>
       </div>
+      </UserInfoProvider>
     );
   //}
 

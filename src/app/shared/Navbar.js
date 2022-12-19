@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link /*Redirect, useHistory*/, useNavigate, redirect } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import globalVar from '../global';
+import {Button, Collapse} from 'react-bootstrap';
 
 const Navbar = () => {
   
@@ -12,18 +13,23 @@ const Navbar = () => {
   const toggleRightSidebar=()=> {
     document.querySelector('.right-sidebar').classList.toggle('open');
   } 
-  
-  //Metodo para cerrar sesion
+
   //const navigate = useHistory();
   const navigate = useNavigate();
 
+  //metodo para navegar a la seleccion de empresa
+  const handleEmpresaSeleccion = () =>{
+    navigate('/seleccionEmpresa')
+  }
+  //Metodo para cerrar sesion
   const CerrarSesionHandler=async()=> {
-    function cambiarToken(){
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    async function cambiarToken(){
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
     await cambiarToken();
+    window.localStorage.removeItem('idEmpresa');
     globalVar.usuario='';
-    navigate("/login");
+    setTimeout(() => {navigate("/login")}, 500);
   } 
 
     return (
@@ -57,7 +63,18 @@ const Navbar = () => {
                     </div>
                   </div>
                   <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Configuraciones</Trans></p>
+                    <p className="preview-subject mb-1">Configuraciones</p>
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item className="preview-item" onClick={handleEmpresaSeleccion}>
+                  <div className="preview-thumbnail">
+                    <div className="preview-icon bg-dark rounded-circle">
+                      <i className="mdi mdi mdi-flattr text-warning"></i>
+                    </div>
+                  </div>
+                  <div className="preview-item-content">
+                    <p className="preview-subject mb-1">Seleccionar Empresa</p>
                   </div>
                 </Dropdown.Item>
                 <Dropdown.Divider />
@@ -71,8 +88,6 @@ const Navbar = () => {
                     <p className="preview-subject mb-1"><Trans>Cerrar Sesión</Trans></p>
                   </div>
                 </Dropdown.Item>
-                <Dropdown.Divider />
-                <p className="p-3 mb-0 text-center"><Trans>Advanced settings</Trans></p>
               </Dropdown.Menu>
             </Dropdown>
           </ul>

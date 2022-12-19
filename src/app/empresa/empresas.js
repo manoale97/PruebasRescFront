@@ -12,10 +12,6 @@ const CompEmpresas = () =>{
 
     const navigate =  useNavigate();//metodo para redireccionar
 
-    useEffect(()=>{
-        document.title = 'Lista Empresas Afiliadas';
-      },[])
-
     const [data, setData] = useState([]);
 
     //Definicion de las columnas para el datatable
