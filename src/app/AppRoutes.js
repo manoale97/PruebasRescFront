@@ -44,6 +44,8 @@ const CompCrudClientes = lazy(() => import('./clientes/crudClientes'));
 const CompUsuarios = lazy(() => import('./usuarios/mostrarUsuarios'));
 const CompCrearUsuario = lazy(() => import('./usuarios/crearUsuarios'));
 const CompEdicionUsuario = lazy(() => import('./usuarios/edicionUsuarios'));
+//administracion
+const CompEmisor = lazy(() => import('./administracion/emisores'));
 
 
 const AppRoutes = (props) => {
@@ -91,6 +93,7 @@ const AppRoutes = (props) => {
             <Route path="/administracion/usuarios" element={ <CompUsuarios></CompUsuarios> } />
             <Route path="/administracion/crearUsuario" element={ <CompCrearUsuario></CompCrearUsuario> } />
             <Route path="/administracion/editarUsuario/:id" element={ <CompEdicionUsuario></CompEdicionUsuario> } />
+            <Route path="/administracion/emisores" element={ <CompEmisor></CompEmisor> } />
             <Route path="*" element={ <Error404></Error404> } />
           </Route>
           <Route exact path="/login" element={<CompLogin></CompLogin>}/>

@@ -1,0 +1,118 @@
+import React, {useEffect, useState} from 'react';
+import { Form, Modal } from 'react-bootstrap';
+import DataTable, { createTheme } from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+import 'react-data-table-component-extensions/dist/index.css';
+import axios from 'axios';
+
+const URI= process.env.REACT_APP_API_URL+'requisitos'
+
+function CompMediosPago(props) {
+
+    //columnas de la tabla 
+    const columns = [
+        {
+            name: 'Id',
+            selector: row => row.idMedioPago,
+            omit: true
+            
+        },
+        {
+            name: 'Medio de Pago',
+            selector: row => row.MedioPago,
+            sortable: true
+            
+        },
+        {
+            name: 'Emisor',
+            selector: row => row.Emisor,
+            
+            wrap: true
+            
+        },
+        {
+            cell: row => <div> 
+                        <button type="button" onClick={(e) =>editarMedioPago(e,row)} className="btn btn-warning btn-rounded btn-sm"><i> </i><i className="mdi mdi-border-color"></i></button>
+                        <button type="button" onClick={(e) =>eliminarMedioPago(e,row)} className="btn btn-danger btn-rounded btn-sm"><i> </i><i className="mdi mdi-delete"></i></button>
+                        </div>,
+            width: "90px",
+            
+        },
+        
+    ];
+
+    const [datos,setDatos] = useState([])
+
+    //metodos para editar y eliminar medios de pago
+    const editarMedioPago = (e,row) =>{
+
+    }
+    const eliminarMedioPago = (e,row) =>{
+
+    }
+
+    // controles del modal de Medios de Pago
+    const [showMdMedios, setShowMdMedios] = useState(false);
+    const handleShowMedios = () => setShowMdMedios(true);
+    const handleCloseMedios = () => setShowMdMedios(false);
+
+    return (
+    <div>
+        <button type="button" onClick={handleShowMedios} className="btn btn-primary btn-fw">Crear nuevo Contacto</button>
+        <DataTableExtensions
+          columns={columns}
+          data={datos}
+          print={false}
+          export={false}
+          filter={false}
+          filterPlaceholder='Buscar'  
+        >
+        <DataTable
+        noHeader
+        //pagination
+        noDataComponent="Inserte un nuevo medio de pago"
+        />
+        </DataTableExtensions>
+        {/******** modal de medios de pago *********/}
+        <Modal show={showMdMedios} onHide={handleCloseMedios} id="modalMediosPago">
+                    <Modal.Header closeButton>
+                    <Modal.Title>Nuevo Medio de Pago</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Medio de Pago</Form.Label>
+                        
+                            <select className="form-control" id="mediodepagoselect">
+                            <option>--Medio de Pago--</option>
+                            <option>Cuenta Corriente</option>
+                            <option>Cuenta de Ahorros</option>
+                            <option>Tarjeta de crédito</option>
+                            </select>
+                        
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                        <Form.Label>Emisor</Form.Label>
+                            <select className="form-control" id="emisorselect">
+                            <option>--Emisor--</option>
+
+                            </select>
+                        </Form.Group>
+                    </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <button className="btn btn-secondary" onClick={handleCloseC}>
+                        Cerrar
+                    </button>
+                    <button className="btn btn-primary" onClick={insertarContacto}>
+                        Guardar
+                    </button>
+                    </Modal.Footer>
+                </Modal>
+                {/*fin modal de medios de pago*/}
+
+    </div>
+    )
+}
+
+export default CompMediosPago
